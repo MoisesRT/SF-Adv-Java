@@ -3,66 +3,75 @@ package student;
 import java.util.List;
 
 public final class Student {
-  private String name;
-  private int grade;
-  private List<String> courses;
+    private String name;
+    private int grade;
+    private List<String> courses;
 
-  // NOT valid overloads
-//  Student(String name, String parentsName) {}
-//  Student(String name, String fraternity) {}
+    public static int validateGrade(int grade) throws Exception {
+        boolean isValid = grade >= 0 && grade <= 100;
+        if (!isValid) {
+            throw new Exception("Grade must be between 0 and 100");
+        }
+        return grade;
+    }
 
-  public static Student ofNameAndParentsName(String name, String parentsName) {
-    // validate!!!
-    return null; // probably want to return an ACTUAL student
-  }
+    public static String validateName(String name) throws Exception {
+        boolean isValid = !name.isEmpty() && name.length() < 20;
+        if (!isValid) {
+            throw new Exception("Name length must be between 1 and 20");
+        }
+        return name;
+    }
 
-  public static Student ofNameAndFraternityName(String name, String fraternity) {
-    // validate!!!
-    return null;
-  }
+    public static List<String> validateCourses(List<String> courses) throws Exception {
+        boolean isValid = !courses.isEmpty();
+        if (!isValid) {
+            throw new Exception("There must be at least one course");
+        }
+        return courses;
+    }
 
-  private Student(String name, int grade, List<String> courses) {
-    this.name = name;
-    this.grade = grade;
-    this.courses = courses; // generally bad...
-  }
+    public static Student ofNameAndGradeAndCourses(String name, int grade, List<String> courses) throws Exception {
+        return new Student(validateName(name), validateGrade(grade), validateCourses(courses));
+    }
 
-  public String getName() {
-    return name;
-  }
+    public static StudentBuilder builder() {
+        return new StudentBuilder();
+    }
 
-  public int getGrade() {
-    return grade;
-  }
+    private Student(String name, int grade, List<String> courses) {
+        this.name = name;
+        this.grade = grade;
+        this.courses = courses; // generally bad...
+    }
 
-  public List<String> getCourses() {
-    return courses;
-  }
+    public String getName() {
+        return name;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public List<String> getCourses() {
+        return courses;
+    }
 }
 
 class UseStudent {
-  public static void main(String[] args) {
-//    Student s = new Student(); // good, I should not do this anyway!
-//    Student s = Student.of("Fred", 76, List.of("Math", "Physics"));
-    Student s = Student.ofNameAndParentsName("Fred", "Mrs Smith");
-    System.out.println("name of student is " + s.getName());
+    public static void main(String[] args) throws Exception {
+        StudentBuilder sb = Student.builder();
+        sb
+                .name("Fred")
+                .grade(78)
+                .course("Math");
+        // do other stuff
+        sb.course("Physics")
+                .course("Algebra");
+        // do more other stuff
+        Student s1 = sb.build();
+        System.out.printf("%s %s %s", s1.getName(), s1.getGrade(), s1.getCourses());
 
-    StudentBuilder sb = Student.builder();
-    sb
-      .name("Fred")
-      .grade(78)
-      .course("Math");
-    // do other stuff
-    sb.course("Physics")
-      .course("Algebra");
-    // do more other stuff
-    Student s1 = sb.build();
-    sb = Student.builder();
-    Student s2 = sb.name("Alex").build();
 
-  }
+    }
 }
-// In either case, provide validation behavior (you choose constraints on validity)
-// Option 1 (simple), implement (and use) a factory
-// Option 2 (less simple, more possible variations), implement and exercise
-// a builder (note a builder should also ONLY build valid objects!)
