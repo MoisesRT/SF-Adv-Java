@@ -62,3 +62,7 @@ class UseStudent {
 
   }
 }
+// In either case, provide validation behavior (you choose constraints on validity)
+// Option 1 (simple), implement (and use) a factory
+// Option 2 (less simple, more possible variations), implement and exercise
+// a builder (note a builder should also ONLY build valid objects!)
